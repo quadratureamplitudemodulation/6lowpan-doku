@@ -1,11 +1,20 @@
 \documentclass[11pt]{scrartcl}
 
 \usepackage{ngerman}
+\usepackage{fancyhdr}
 
-\title{6LoWPAN}
-\subtitle{Einführung in die Technologie und Implementierung mit Contiki}
+\title{\documenttitle}
+\subtitle{\documentsubtitle}
 \author{Julian Rebholz,Tino Weber, Alex Jäger}
 \date{\today}
+
+\newcommand{\documenttitle}{6LoWPAN}
+\newcommand{\documentsubtitle}{Einführung in die Technologie und Implementierung mit Contiki}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\documenttitle\ - Einführung und Implementierung}
+\rhead{Verteilte Systeme}
 
 \begin{document}
 \maketitle
