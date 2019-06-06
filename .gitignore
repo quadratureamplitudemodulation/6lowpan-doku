@@ -1,0 +1,6 @@
+# Ignore everything
+*
+
+# Allow only tex-files and .gitignore
+!.tex
+!.gitignore
