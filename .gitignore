@@ -3,6 +3,8 @@
 
 # Allow only tex-files and .gitignore
 !*.tex
+!*.bib
+!*.pdf
 !.gitignore
 !README.md
 
