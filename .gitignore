@@ -4,6 +4,7 @@
 # Allow only tex-files and .gitignore
 !*.tex
 !.gitignore
+!README.md
 
 # Allow subdirectories
 !*/

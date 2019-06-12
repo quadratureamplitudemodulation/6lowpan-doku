@@ -2,6 +2,8 @@
 
 \usepackage{ngerman}
 \usepackage{fancyhdr}
+\usepackage{cite}
+\usepackage{pdfpages}
 
 \title{\documenttitle}
 \subtitle{\documentsubtitle}
@@ -15,6 +17,9 @@
 \fancyhf{}
 \lhead{\documenttitle\ - Einführung und Implementierung}
 \rhead{Verteilte Systeme}
+\cfoot{\thepage}
+
+
 
 \begin{document}
 \maketitle
@@ -30,4 +35,8 @@
 \input{contiki.tex}
 \newpage
 \input{beispielprojekt.tex}
+\newpage
+\bibliographystyle{plaindin}
+\bibliography{sources}
+
 \end{document}
