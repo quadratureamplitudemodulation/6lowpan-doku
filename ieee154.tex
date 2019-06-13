@@ -1,1 +1,133 @@
 \section{Der IEEE 802.15.4 Funkstandard}
+IEEE 802.15.4 oder kurz 15.4 beschreibt einen Funkstandard, der bei geringer Datenrate die Leistungsaufnahme einzelner Teilnehmer möglichst weit zu reduzieren versucht. Das ist nötig, um den Anforderungen von Sensornetzwerken gerecht zu werden. \\
+Durch den Standard werden der \ac{phy}- und \ac{mac}-Layer eines \ac{wpan} definiert. \\
+
+\subsection{Teilnehmer und Topologien}
+Alle Teilnehmer eines 15.4 \ac{pan} werden in zwei Kategorien eingeteilt:
+\begin{itemize}
+	\item Ein \ac{ffd} ist ein Teilnehmer mit vollständiger Implementierung von 15.4. Er kann alle Rollen annehmen.
+	\item Ein \ac{rfd} hat reduzierte Fähigkeiten. Es kann nur mit einem FFD kommunizieren und somit nicht als Coordinator (siehe unten) auftreten.
+\end{itemize}
+15.4 ist gemäß IEEE für zwei verschiedene Netzwerk-Topologien ausgelegt:
+\begin{itemize}
+	\item Sterntopology
+	\item Peer-to-Peer-Topology
+\end{itemize}
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\textwidth]{Grafiken-Alex/topology.jpg}
+	\caption{Topologien von 15.4-Netzwerken nach \cite[S.46]{ieee154}}
+	\label{topology}
+\end{figure}
+In beiden Topologien existiert ein sogenannte \ac{pan}-Coordinator, der jedoch verschiedene Aufgaben übernimmt.\\
+In einer Stern-Topologie ist der PAN-Coordinator der zentrale Kommunikationspunkt des Netzwerks. Alle Geräte kommunizieren nur mit ihm, was bedeutet, dass der Coordinator einen vergleichsweise hohen Energiebedarf hat. Die Teilnehmer hingegen müssen nur für ihre eigene Kommunikation aufwachen und können die restliche Zeit im Sleeping-Modus verbringen. Diese Topologie bietet sich an, wenn man einen netzbetriebenen Coordinator und mehrere batteriebetriebene Teilnehmer hat wie es z.B. in der Gebäudeautomatisierung oder bei \ac{pc} Peripheriegeräten der Fall ist.\\
+Eine Peer-to-Peer-Topologie bietet sich offensichtlich für effizientes Routing an. Hierbei kommunizieren alle \ac{ffd} miteinander und \ac{rfd} als sogenannte Leafs mit einem \ac{ffd}. Anders als bei der Stern-Topologie ist somit der Coordinator nicht zentrale Kommunikationsstelle, sondern bietet Synchronisierungsservices o.ä. Diese Topologie bietet sich durch die Möglichkeit, Nachrichten per Multi-Hop zu routen im Bereich der Sensor-Netzwerke besonders an.\\
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{Grafiken-Alex/multicluster.jpg}
+	\caption{Ein Multicluster Tree Netzwerk nach \cite[S.48]{ieee154}. Die Verbindungen zeigen nicht den Kommunikationsfluss, sondern Parent-Child-Beziehungen}
+	\label{multicluster}
+\end{figure}
+Eine besondere Form der Peer-to-Peer-Technologie ist der Cluster Tree. Ein FFD beginnt einen neuen Cluster Tree, indem es eine freie PAN ID für das Netzwerk sucht und beginnt, sogenannte Beacons auszusenden. Das Device wird damit automatisch der Coordinator dieses Netzwerks. Ein Nachbar, der das Beacon empfängt, kann nun anfragen, am Netzwerk teilzunehmen. Erlaubt der Coordinator das, merkt er sich den Nachbarn als Child und dieser wiederum merkt sich den Coordinator als Parent. Der Nachbar beginnt nun seinerseits Beacons auszusenden, die weitere Geräte (auch solche, die nicht in direkter Reichweite des Coordinators sind) nutzen können, um dem Netzwerk teilzunehmen. Dadurch können große Netzwerke mit komplexen Routing-Tabellen entstehen. Darüber hinaus kann der PAN Coordinator einen Teilnehmer seines Netzwerks anweisen, ein eigenes Cluster zu konstruieren, bei dem er als PAN Coordinator auftritt. Dieser wiederum hält weiterhin Kontakt zu einem der Devices des originalen Netzwerks, wodurch große Multicluster-Netzwerke entstehen können. Grafik \ref{multicluster} zeigt ein solches Netzwerk. Durch diese Technik wird ein großer Netzwerkradius erreicht, wobei die Latenz einer Nachricht mit der Größe des Netzwerks zunimmt.\\
+
+\subsection{Physical Layer}
+\subsubsection{Genutzte Frequenzbänder}
+15.4 nutzt die folgenden Frequenzbänder:
+\begin{itemize}
+	\item 2,4-2,4835 GHz ISM Band (16 Kanäle) weltweit
+	\item 902-928 MHz ISM Band (10 Kanäle) in den USA
+	\item 868-868,6 MHz Band (1 Kanal) in Europa
+\end{itemize}
+Dabei wird im 902MHz-Band ein Kanalabstand von 2 MHz und im 2,4GHz-Band ein Kanalabstand von 5 MHz eingesetzt. Die Kanäle werden mit Channel 0 (868 MHz), Channel 1-10 (902 MHz) und Channel 11-26 (2,4 GHz) bezeichnet.
+\subsubsection{Genutzte Spreiz- und Modulationsverfahren}
+Zum Verständnis der Modulation des Physical Layer durch 15.4 sind Kenntnisse über verschiedene Modulationsverfahren nötig. Diese sind im Folgenden kurz beschrieben. \\
+
+\textbf{\ac{dsss}} \\
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\textwidth]{Grafiken-Alex/dsss.jpg}
+	\caption{Ein per DSSS gespreiztes Signal}
+	\label{dsss}
+\end{figure}
+Das \acf{dsss} - ein sogenanntes Spreizverfahren - dient dazu, den Bitstrom auf ein breiteres Frequenzband zu spreizen. Dabei wird die ursprüngliche Bitfolge auf einen pseudo-zufällige Subbit-Strom moduliert. Die einzelnen Subbits dieses Stroms werden Chips genannt, der Strom Chipfolge oder Spreizcode.\\
+In Abbildung \ref{dsss} wird das Signal mit einem Spreizcode unter Verwendung der XOR-Funktion gespreizt. Auf jedes Bit des Signals kommen dabei 10 Chips, wodurch eine Chiprate erreicht wird, die zehn Mal so hoch wie die Bitrate ist. Dieses Verhältnis wird auch Spreizfaktor genannt.\\
+Sinn der DSSS ist es, ein Signal unempfindlicher schmalbandiger Störungen zu machen. Offensichtlich muss dem Empfänger zu Demodulation entweder der Spreizcode oder - da er pseudo-zufällig ist - der Generator zur Erstellung des Spreizcodes bekannt sein.\\
+
+\textbf{\ac{bpsk}} \\
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\textwidth]{Grafiken-Alex/bpsk.jpg}
+	\caption{Ein BPSK-moduliertes Signal mit einer Cosinus-Schwingung als Träger}
+	\label{bpsk}
+\end{figure}
+Die \acf{bpsk} ist die einfachste Form des Phase-Shift-Keyings. Die Bitfolge wird dabei als bipolares \ac{nrz} dargestellt und daraufhin mit dem Trägersignal multipliziert. Grafik \ref{bpsk} zeigt das Prinzip. \\
+
+\textbf{\ac{oqpsk}}\\
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{Grafiken-Alex/qpsk.jpg}
+	\caption{Beispielhafte Erzeugung eines Sendesignals mit QPSK (links) und das Sendesignal im Vergleich mit phasenverschobenen Cosinus-Schwingungen (rechts).}
+	\label{qpsk}
+\end{figure}
+Das \acf{oqpsk} ist eine komplexere Form des Phase-Shift-Keyings, bei der mit jedem Symbol ein Informationsgehalt von zwei Bits übertragen wird. Zunächst wird normales QPSK betrachtet. Hierbei wird der Bitstrom aufgeteilt in einen Real- und einen Imaginärbitstrom, wobei jedes zweite Bit in den Imaginärbitstrom fließt. Diese Ströme gehen daraufhin als Eingänge in einen \ac{QAM} Modulator, welcher sie mit einem Cosinus (Real) bzw. Sinus (Imaginär) multipliziert und die Resultate subtrahiert, um das Sendesignal zu bilden.\\
+Eine sinnvollere Aufteilung wird dadurch erreicht, dass der Bitstrom in der komplexen Zahlenebene so gemappt wird, dass der komplexe Zahlenstrom, der durch das Mapping entsteht gleichmäßig um den Ursprung verteilt ist. Das kann beispielsweise dadurch realisiert werden, dass die Zahlenfolge 00 als 0+0j dargestellt wird, die Zahlenfolge 01 als 0+1j usw. Häufig werden auch die resultierenden Werte um $\pi/4$ verschoben, also 00 auch 1+1j gemappt, 01 auf -1+1j usw.\\
+Statt eines binären Zahlenstroms wird häufig ein Zahlenstrom mit Werten im Bereich [0,3] eingesetzt. Dieser hat die halbe Symbolrate des binären Stroms, aber statt einem zwei Bit/Symbol, wodurch wiederum die gleiche Bitrate erreicht wird. Der Vorteil besteht darin, dass er die gleiche Symbolrate wie der resultierende komplexe Zahlenstrom hat.\\
+Die Erzeugung eines Signals mit QPSK ist in Grafik \ref{qpsk} anschaulich dargestellt.\\
+Im Sendesignal ist klar erkennbar, dass bei Nulldurchgängen, also zum Beispiel von 1+0j zu -1+0j große Phasensprünge resultieren. Weil man dies vermeiden will, verschiebt man Real- und Imaginärteil des komplexen Signals um $\pi/2$ und bezeichnet das Resultat als Offset-QPSK oder kurz O-QPSK.\\
+
+\subsubsection{Konkretes Modulationsverfahren}
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{Grafiken-Alex/modulation.jpg}
+	\caption{Ablauf der Modulation bei 15.4 aus \cite[S.412]{ieee154}}
+	\label{modulation}
+\end{figure}
+Tatsächlich benutzt 15.4 eine Kombination aus DSSS und O-QPSK im 2,4GHz-Band und DSSS kombiniert mit BPSK in den restlichen Bändern. Der Ablauf der Modulationsverfahren ist in Abbildung \ref{modulation} dargestellt. Zunächst wird der Datenstrom in Oktette aufgeteilt. Jedes Oktett wird wiederum in zwei Symbole aufgeteilt, wobei die LSB (b0,b1,b2,b3) ein Symbol bilden und die MSB (b4,b5,b6,b7) ein anderes. Es ist darauf zu achten, dass das Symbol der LSB zuerst versendet wird.\\
+Weil ein Symbol aus 4 bit besteht, kann es 16 verschiedene Werte annehmen. Entsprechend des Werts des Symbols wird einer von 16 verschiedenen, zueinander orthogonalen Spreizcodes verwendet, die im 2,4GHz-Band eine Länge von 32 Chips und in den restlichen Bändern eine Länge von 16 Chips haben und in der IEEE-Norm für das 2,4GHz-Band wie folgt festgelegt sind.\cite[S.413]{ieee154}\\
+\begin{center}
+	\begin{tabular}{cc}
+		\textbf{Wert des Symbols} & \textbf{32-bit Spreizcode} \\
+		0 &1 1 0 1 1 0 0 1 1 1 0 0 0 0 1 1 0 1 0 1 0 0 1 0 0 0 1 0 1 1 1 0\\
+		1&1 1 1 0 1 1 0 1 1 0 0 1 1 1 0 0 0 0 1 1 0 1 0 1 0 0 1 0 0 0 1 0\\
+		2&0 0 1 0 1 1 1 0 1 1 0 1 1 0 0 1 1 1 0 0 0 0 1 1 0 1 0 1 0 0 1 0\\
+		3&0 0 1 0 0 0 1 0 1 1 1 0 1 1 0 1 1 0 0 1 1 1 0 0 0 0 1 1 0 1 0 1\\
+		4&0 1 0 1 0 0 1 0 0 0 1 0 1 1 1 0 1 1 0 1 1 0 0 1 1 1 0 0 0 0 1 1\\
+		5&0 0 1 1 0 1 0 1 0 0 1 0 0 0 1 0 1 1 1 0 1 1 0 1 1 0 0 1 1 1 0 0\\
+		6&1 1 0 0 0 0 1 1 0 1 0 1 0 0 1 0 0 0 1 0 1 1 1 0 1 1 0 1 1 0 0 1\\
+		7&1 0 0 1 1 1 0 0 0 0 1 1 0 1 0 1 0 0 1 0 0 0 1 0 1 1 1 0 1 1 0 1\\
+		8&1 0 0 0 1 1 0 0 1 0 0 1 0 1 1 0 0 0 0 0 0 1 1 1 0 1 1 1 1 0 1 1\\
+		9&1 0 1 1 1 0 0 0 1 1 0 0 1 0 0 1 0 1 1 0 0 0 0 0 0 1 1 1 0 1 1 1\\
+		10&0 1 1 1 1 0 1 1 1 0 0 0 1 1 0 0 1 0 0 1 0 1 1 0 0 0 0 0 0 1 1 1\\11&0 1 1 1 0 1 1 1 1 0 1 1 1 0 0 0 1 1 0 0 1 0 0 1 0 1 1 0 0 0 0 0\\
+		12&0 0 0 0 0 1 1 1 0 1 1 1 1 0 1 1 1 0 0 0 1 1 0 0 1 0 0 1 0 1 1 0\\
+		13&0 1 1 0 0 0 0 0 0 1 1 1 0 1 1 1 1 0 1 1 1 0 0 0 1 1 0 0 1 0 0 1\\
+		14&1 0 0 1 0 1 1 0 0 0 0 0 0 1 1 1 0 1 1 1 1 0 1 1 1 0 0 0 1 1 0 0\\
+		15&1 1 0 0 1 0 0 1 0 1 1 0 0 0 0 0 0 1 1 1 0 1 1 1 1 0 1 1 1 0 0 0\\
+	\end{tabular}
+\end{center}
+
+Für die restlichen Bänder werden die Symbole auf folgende Spreizcodes gemappt. \cite[S.414]{ieee154}
+\begin{center}
+	\begin{tabular}{cc}
+		\textbf{Wert des Symbols} & \textbf{16-bit Spreizcode} \\
+		0&0 0 1 1 1 1 1 0 0 0 1 0 0 1 0 1\\
+		1&0 1 0 0 1 1 1 1 1 0 0 0 1 0 0 1\\
+		2&0 1 0 1 0 0 1 1 1 1 1 0 0 0 1 0\\
+		3&1 0 0 1 0 1 0 0 1 1 1 1 1 0 0 0\\
+		4&0 0 1 0 0 1 0 1 0 0 1 1 1 1 1 0\\
+		5&1 0 0 0 1 0 0 1 0 1 0 0 1 1 1 1\\
+		6&1 1 1 0 0 0 1 0 0 1 0 1 0 0 1 1\\
+		7&1 1 1 1 1 0 0 0 1 0 0 1 0 1 0 0\\
+		8&0 1 1 0 1 0 1 1 0 1 1 1 0 0 0 0\\
+		9&0 0 0 1 1 0 1 0 1 1 0 1 1 1 0 0\\
+		10&0 0 0 0 0 1 1 0 1 0 1 1 0 1 1 1\\
+		11&1 1 0 0 0 0 0 1 1 0 1 0 1 1 0 1\\
+		12&0 1 1 1 0 0 0 0 0 1 1 0 1 0 1 1\\
+		13&1 1 0 1 1 1 0 0 0 0 0 1 1 0 1 0\\
+		14&1 0 1 1 0 1 1 1 0 0 0 0 0 1 1 0\\
+		15&1 0 1 0 1 1 0 1 1 1 0 0 0 0 0 1\\
+	\end{tabular}
+\end{center}
+
+Die so entstandenen Chipströme werden nun mit einem o-QPSK bzw. BPSK-Modulator 
+ 
+
