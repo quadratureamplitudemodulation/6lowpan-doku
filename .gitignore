@@ -1,12 +1,16 @@
 # Ignore everything
 *
 
-# Allow only tex-files and .gitignore
+# Allow only tex-files, .gitignore and graphics
 !*.tex
 !*.bib
 !*.pdf
+!*.jpg
 !.gitignore
 !README.md
+
+# Ignore the compiled pdf
+*6LoWPAN.pdf
 
 # Allow subdirectories
 !*/

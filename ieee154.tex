@@ -3,7 +3,7 @@ IEEE 802.15.4 oder kurz 15.4 beschreibt einen Funkstandard, der bei geringer Dat
 Durch den Standard werden der \ac{phy}- und \ac{mac}-Layer eines \ac{wpan} definiert. \\
 
 \subsection{Teilnehmer und Topologien}
-Alle Teilnehmer eines 15.4 \ac{pan} werden in zwei Kategorien eingeteilt:
+Dieses Kapitel deckt eigentlich Themen des Data Link Layers ab und ist im Kontext des entsprechenden Kapitels zu verstehen. Jedoch sind die Teilnehmer und Topologien des Netzwerks von so grundlegender Bedeutung, dass sie an dieser Stelle vorgezogen wurden. Alle Teilnehmer eines 15.4 \ac{pan} werden in zwei Kategorien eingeteilt:
 \begin{itemize}
 	\item Ein \ac{ffd} ist ein Teilnehmer mit vollständiger Implementierung von 15.4. Er kann alle Rollen annehmen.
 	\item Ein \ac{rfd} hat reduzierte Fähigkeiten. Es kann nur mit einem FFD kommunizieren und somit nicht als Coordinator (siehe unten) auftreten.
@@ -69,7 +69,7 @@ Die \acf{bpsk} ist die einfachste Form des Phase-Shift-Keyings. Die Bitfolge wir
 	\caption{Beispielhafte Erzeugung eines Sendesignals mit QPSK (links) und das Sendesignal im Vergleich mit phasenverschobenen Cosinus-Schwingungen (rechts).}
 	\label{qpsk}
 \end{figure}
-Das \acf{oqpsk} ist eine komplexere Form des Phase-Shift-Keyings, bei der mit jedem Symbol ein Informationsgehalt von zwei Bits übertragen wird. Zunächst wird normales QPSK betrachtet. Hierbei wird der Bitstrom aufgeteilt in einen Real- und einen Imaginärbitstrom, wobei jedes zweite Bit in den Imaginärbitstrom fließt. Diese Ströme gehen daraufhin als Eingänge in einen \ac{QAM} Modulator, welcher sie mit einem Cosinus (Real) bzw. Sinus (Imaginär) multipliziert und die Resultate subtrahiert, um das Sendesignal zu bilden.\\
+Das \acf{oqpsk} ist eine komplexere Form des Phase-Shift-Keyings, bei der mit jedem Symbol ein Informationsgehalt von zwei Bits übertragen wird. Zunächst wird normales QPSK betrachtet. Hierbei wird der Bitstrom aufgeteilt in einen Real- und einen Imaginärbitstrom, wobei jedes zweite Bit in den Imaginärbitstrom fließt. Diese Ströme gehen daraufhin als Eingänge in einen \ac{qam} Modulator, welcher sie mit einem Cosinus (Real) bzw. Sinus (Imaginär) multipliziert und die Resultate subtrahiert, um das Sendesignal zu bilden.\\
 Eine sinnvollere Aufteilung wird dadurch erreicht, dass der Bitstrom in der komplexen Zahlenebene so gemappt wird, dass der komplexe Zahlenstrom, der durch das Mapping entsteht gleichmäßig um den Ursprung verteilt ist. Das kann beispielsweise dadurch realisiert werden, dass die Zahlenfolge 00 als 0+0j dargestellt wird, die Zahlenfolge 01 als 0+1j usw. Häufig werden auch die resultierenden Werte um $\pi/4$ verschoben, also 00 auch 1+1j gemappt, 01 auf -1+1j usw.\\
 Statt eines binären Zahlenstroms wird häufig ein Zahlenstrom mit Werten im Bereich [0,3] eingesetzt. Dieser hat die halbe Symbolrate des binären Stroms, aber statt einem zwei Bit/Symbol, wodurch wiederum die gleiche Bitrate erreicht wird. Der Vorteil besteht darin, dass er die gleiche Symbolrate wie der resultierende komplexe Zahlenstrom hat.\\
 Die Erzeugung eines Signals mit QPSK ist in Grafik \ref{qpsk} anschaulich dargestellt.\\
@@ -127,7 +127,41 @@ Für die restlichen Bänder werden die Symbole auf folgende Spreizcodes gemappt.
 		15&1 0 1 0 1 1 0 1 1 1 0 0 0 0 0 1\\
 	\end{tabular}
 \end{center}
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{Grafiken-Alex/154modulation.jpg}
+	\caption{Die vollständige Modulation eines Symbolstroms auf einen 868MHz-Träger unter Verwendung eines Alphabets mit 16 Chips/Symbol und BPSK als Modulationsart}
+	\label{154modulation}
+\end{figure}
 
-Die so entstandenen Chipströme werden nun mit einem o-QPSK bzw. BPSK-Modulator 
- 
+Die so entstandenen Chipströme werden nun mit einem O-QPSK bzw. BPSK-Modulator moduliert. Zur Veranschaulichung zeigt Grafik \ref{154modulation} die gesamte Modulation eines Symbolstroms - dieser setzt sich aus 4 Bit/Symbol zusammen - zum analogen Sendesignal. \\
+
+\subsection{Data Link Layer}
+\begin{figure}
+	\centering
+	\includegraphics[width=0.5\textwidth]{Grafiken-Alex/ieee-osi.pdf}
+	\caption{Die Unterteilung des Data Link Layers in LLC und MAC nach Norm des IEEE}
+	\label{ieee-osi}
+\end{figure}
+Die IEEE unterteilt das aus dem OSI-Modell bekannte Data Link Layer in zwei Sublayer, die \ac{llc} Layer und \acf{mac} Layer heißen. Dabei ist der MAC-Layer in der Hirarchie unterhalb des LLC-Layers angesiedelt und wird häufig als Layer 2a, letzteres als Layer 2b bezeichnet. Grafik \ref{ieee-osi} zeigt die Aufteilung des Data Link Layers in LLC und MAC anschaulich.\\
+Der LLC-Layer ist in IEEE 802.2 für alle Protokolle der 802-Norm definiert, hat sich aber in der Realität nicht durchgesetzt, weshalb der Network-Layer direkt auf den MAC-Layer zugreift. \cite{bartusch}IEEE 802.15.4 spezifiziert aus diesem Grund nur den MAC-Layer, weshalb im folgenden nicht auf die LLC-Schicht eingegangen wird. Die Begriffe Data Link Layer und Medium Access Layer können demnach im Kontext dieses Dokuments als Synonyme angesehen werden.
+\subsubsection{MAC-Layer}
+Wie bei vielen Funkübertragungstechniken üblich verwendet 15.4 den \ac{csmaca} Algorithmus. Ziel dabei ist es, Kollisionen auf dem Kanal zu vermeiden statt sie wie bei \ac{csmacd} zu erkennen und sich gegebenenfalls zurückzuziehen (z.B. per Arbitrierung). Die Nutzung von CSMA/CA bedeutet für einzelne Teilnehmer, dass sie zunächst auf dem Kanal lauschen müssen, um zu erkennen, ob dort gerade eine Kommunikation stattfindet und erst, wenn die Sendeleistung auf diesem Kanal einen bestimmten Wert unterschreitet - ergo es ist nur Rauschen vorhanden - senden darf. Abhängig vom genutzten Frequenzband kann er die verschiedenen zur Verfügung stehenden Kanäle analysieren und sich einen freien Kanal suchen (im 2,4-GHz-Band stehen immerhin 16 Kanäle zur Verfügung). \\
+
+\textbf{MAC-Adresse}\\
+Zur eindeutigen Identifizierung jedes Teilnehmers teilt sich jeder eine 8 Byte lange MAC-Adresse zu. Diese wird schon beim Flashen der Software festgelegt und bleibt somit über die Lebensdauer des Geräts bestehen. Die vollständige MAC-Adresse wird nach dem von der IEEE standardisierten Format \ac{eui64} erzeugt. Die ersten drei Bytes kennzeichnen demnach den Gerätehersteller, während die restlichen Bytes durch das Unternehmen selbst vergeben werden. Dadurch wird gewährleistet, dass jedes Gerät eine global einmalige MAC-Adresse erhält. \\
+Weil eine 8 Byte lange MAC-Adresse offensichtlich gerade unter Berücksichtigung des gerade mal bis zu 127 Byte großen Frames eines 15.4 Pakets einen zu großen Overhead erzeugt - und die globale Einmaligkeit aufgrund der lokalen Beschränktheit eines Personal Area Networks ohnehin nicht relevant ist - kann der Teilnehmer sich bei der Anmeldung im Netzwerk durch den PAN Coordinator eine Kurzadresse (engl. Short Address) von zwei Bytes zuweisen lassen. Das beschränkt zwar die maximale Teilnehmerzahl eines Netzwerks auf 65535 Teilnehmer, jedoch sind Sensornetzwerke dieser Größenordnung ohnehin nicht realistisch. Im Jahr 2015 dürfte das größte Sensornetzwerk im Bereich von 1000 Sensorknoten gelegen haben. \cite{schiessleiot} \\
+
+\textbf{Beacon und Non-Beacon Mode}\\
+Im MAC-Layer gibt es zwei Möglichkeiten, den Kanalzugriff zu organisieren. Die einfachere davon ist der Non-Beacon Mode, bei dem die Teilnehmer durch simplen Einsatz des CSMA/CA Algorithmus wie oben beschrieben auf den Kanal zugreifen können. Das sorgt für eine sehr einfache Implementierung des MAC Layers, verzichtet aber auf die organisatorischen Vorteile des Beacon Modes.\\
+Dieser setzt auf sogenannte Superframes. Ein Superframe ist ein Zeitrahmen, der mehrere Frames (=15.4 Pakete) überdauert. Ein Superframe wird durch das Aussenden eines Beacons durch den PAN Coordinator begonnen und endet mit dem Beginn des nächsten Superframes. Innerhalb eines Superframes lassen sich nun aktive Phasen und inaktive Phasen definieren, sodass den Teilnehmern des Netzwerks ermöglicht wird, zu gewissen Zeitpunkten in den Sleep-Modus zu gehen. Deshalb wird die inaktive Phase auch als Sleep Period bezeichnet.\\
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{Grafiken-Alex/superframe.pdf}
+	\caption{Inhalte eines Superframes bei Nutzung von 15.4 im Beacon Mode}
+	\label{superframe}
+\end{figure}
+Die aktive Phase lässt sich weiter in \ac{cap} und \ac{cfp} unterteilen. \cite{superframestructure}. In ersterer ist der Kanal für alle Teilnehmer verfügbar und darf unter Verwendung des CSMA/CA-Algorithmus genutzt werden. Ein Teilnehmer - im Übrigen auch Node genannt - kann den Channel durch zweimaliges Aussenden des \ac{caa} Symbols reservieren und darf daraufhin seine Daten senden. \cite{sarodeslottedscmaca} Die CFP Periode wird in \ac{gts} unterteilt. Einem Teilnehmer kann also ein Slot zugewiesen werden, während dem er den garantierten alleinigen Zugriff auf den Kanal hat. Dabei ist anzunehmen, dass Nodes geringer Priorität ihre Daten während der CAP versenden und Nodes hoher Priorität eine GTS in der CFP zugewiesen bekommen. Nach Abschluss der CFP beginnt die Sleep Period. Die Länge der jeweiligen Perioden und ihre Existenz - CFP und Sleep Period sind optional - teilt der PAN Coordinator mit dem Inhalt des Beacons mit. Die ganze Struktur eines Superframes ist in Abbildung \ref{superframe} dargestellt. Es ist im Übrigen darauf zu achten, dass die CFP maximal sieben GTS bereitstellen darf.
+
+
 
