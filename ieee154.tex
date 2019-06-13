@@ -143,10 +143,10 @@ Die so entstandenen Chipströme werden nun mit einem O-QPSK bzw. BPSK-Modulator 
 	\caption{Die Unterteilung des Data Link Layers in LLC und MAC nach Norm des IEEE}
 	\label{ieee-osi}
 \end{figure}
-Die IEEE unterteilt das aus dem OSI-Modell bekannte Data Link Layer in zwei Sublayer, die \ac{llc} Layer und \acf{mac} Layer heißen. Dabei ist der MAC-Layer in der Hirarchie unterhalb des LLC-Layers angesiedelt und wird häufig als Layer 2a, letzteres als Layer 2b bezeichnet. Grafik \ref{ieee-osi} zeigt die Aufteilung des Data Link Layers in LLC und MAC anschaulich.\\
+Es sei nochmal darauf hingewiesen, dass die IEEE das aus dem OSI-Modell bekannte Data Link Layer in zwei Sublayer unterteilt, die \ac{llc} Layer und \acf{mac} Layer heißen. Dabei ist der MAC-Layer in der Hirarchie unterhalb des LLC-Layers angesiedelt und wird häufig als Layer 2a, letzteres als Layer 2b bezeichnet. Grafik \ref{ieee-osi} zeigt die Aufteilung des Data Link Layers in LLC und MAC anschaulich.\\
 Der LLC-Layer ist in IEEE 802.2 für alle Protokolle der 802-Norm definiert, hat sich aber in der Realität nicht durchgesetzt, weshalb der Network-Layer direkt auf den MAC-Layer zugreift. \cite{bartusch}IEEE 802.15.4 spezifiziert aus diesem Grund nur den MAC-Layer, weshalb im folgenden nicht auf die LLC-Schicht eingegangen wird. Die Begriffe Data Link Layer und Medium Access Layer können demnach im Kontext dieses Dokuments als Synonyme angesehen werden.
 \subsubsection{MAC-Layer}
-Wie bei vielen Funkübertragungstechniken üblich verwendet 15.4 den \ac{csmaca} Algorithmus. Ziel dabei ist es, Kollisionen auf dem Kanal zu vermeiden statt sie wie bei \ac{csmacd} zu erkennen und sich gegebenenfalls zurückzuziehen (z.B. per Arbitrierung). Die Nutzung von CSMA/CA bedeutet für einzelne Teilnehmer, dass sie zunächst auf dem Kanal lauschen müssen, um zu erkennen, ob dort gerade eine Kommunikation stattfindet und erst, wenn die Sendeleistung auf diesem Kanal einen bestimmten Wert unterschreitet - ergo es ist nur Rauschen vorhanden - senden darf. Abhängig vom genutzten Frequenzband kann er die verschiedenen zur Verfügung stehenden Kanäle analysieren und sich einen freien Kanal suchen (im 2,4-GHz-Band stehen immerhin 16 Kanäle zur Verfügung). \\
+Wie bei vielen Funkübertragungstechniken üblich verwendet 15.4 den \ac{csmaca} Algorithmus. Ziel dabei ist es, Kollisionen auf dem Kanal zu vermeiden statt sie wie bei \ac{csmacd} zu erkennen und sich gegebenenfalls zurückzuziehen (z.B. per Arbitrierung). Die Nutzung von CSMA/CA bedeutet für einzelne Teilnehmer, dass sie zunächst auf dem Kanal lauschen müssen, um zu erkennen, ob dort gerade eine Kommunikation stattfindet und erst, wenn die Sendeleistung auf diesem Kanal einen bestimmten Wert unterschreitet - ergo es ist nur Rauschen vorhanden - senden darf. Abhängig vom genutzten Frequenzband kann der PAN Coordinator bei der Erstellung eines neuen PAN die verschiedenen zur Verfügung stehenden Kanäle analysieren und sich einen freien Kanal suchen (im 2,4-GHz-Band stehen immerhin 16 Kanäle zur Verfügung). \\
 
 \textbf{MAC-Adresse}\\
 Zur eindeutigen Identifizierung jedes Teilnehmers teilt sich jeder eine 8 Byte lange MAC-Adresse zu. Diese wird schon beim Flashen der Software festgelegt und bleibt somit über die Lebensdauer des Geräts bestehen. Die vollständige MAC-Adresse wird nach dem von der IEEE standardisierten Format \ac{eui64} erzeugt. Die ersten drei Bytes kennzeichnen demnach den Gerätehersteller, während die restlichen Bytes durch das Unternehmen selbst vergeben werden. Dadurch wird gewährleistet, dass jedes Gerät eine global einmalige MAC-Adresse erhält. \\
@@ -162,7 +162,8 @@ Dieser setzt auf sogenannte Superframes. Ein Superframe ist ein Zeitrahmen, der 
 	\label{superframe}
 \end{figure}
 Die aktive Phase lässt sich weiter in \ac{cap} und \ac{cfp} unterteilen. \cite{superframestructure}. In ersterer ist der Kanal für alle Teilnehmer verfügbar und darf unter Verwendung des CSMA/CA-Algorithmus genutzt werden. Ein Teilnehmer - im Übrigen auch Node genannt - kann den Channel durch zweimaliges Durchführen der \ac{caa} Methode - hierbei lauscht er auf dem Kanal, ob Kommunikation stattfindet - erforschen und darf daraufhin - vorausgesetzt es findet aktuell keine Kommunikation statt - seine Daten senden. \cite{sarodeslottedscmaca} Es ist darauf zu achten, dass es sich hierbei um ein Slotted CSMA/CA handelt und deshalb CAA zu Beginn eines Slots durchgeführt werden muss. \\
-Die CFP Periode wird in \ac{gts} unterteilt. Einem Teilnehmer kann also ein Slot zugewiesen werden, während dem er den garantierten alleinigen Zugriff auf den Kanal hat. Dabei ist anzunehmen, dass Nodes geringer Priorität ihre Daten während der CAP versenden und Nodes hoher Priorität eine GTS in der CFP zugewiesen bekommen. Nach Abschluss der CFP beginnt die Sleep Period. Die Länge der jeweiligen Perioden und ihre Existenz - CFP und Sleep Period sind optional - teilt der PAN Coordinator mit dem Inhalt des Beacons mit. Die ganze Struktur eines Superframes ist in Abbildung \ref{superframe} dargestellt. Es ist im Übrigen darauf zu achten, dass die CFP maximal sieben GTS bereitstellen darf. Das resultiert darauf, dass ein Superframe eine maximale Länge von 16 Slots hat, wobei 9 Slots für CAP bereitgestellt werden müssen.
+Die CFP Periode wird in \ac{gts} unterteilt. Einem Teilnehmer kann also ein Slot zugewiesen werden, während dem er den garantierten alleinigen Zugriff auf den Kanal hat. Dabei ist anzunehmen, dass Nodes geringer Priorität ihre Daten während der CAP versenden und Nodes hoher Priorität eine GTS in der CFP zugewiesen bekommen. Nach Abschluss der CFP beginnt die Sleep Period. Die Länge der jeweiligen Perioden und ihre Existenz - CFP und Sleep Period sind optional - teilt der PAN Coordinator mit dem Inhalt des Beacons mit. Die ganze Struktur eines Superframes ist in Abbildung \ref{superframe} dargestellt. Es ist im Übrigen darauf zu achten, dass die CFP maximal sieben GTS bereitstellen darf. Das resultiert darauf, dass ein Superframe eine maximale Länge von 16 Slots hat, wobei 9 Slots für CAP bereitgestellt werden müssen.\\
+Weil es sich bei 15.4 um eine Norm handelt, die die benötigte elektrische Leistung einzelner Teilnehmer reduzieren soll, ist es durchaus nicht unüblich, dass die aktive Periode zeitlich nur 1\% der inaktiven Periode ausmacht.\\
 
 \subsection{Datenrahmen}
 Die Datenrahmen können eigentlich den einzelnen Schichten zugeordnet werden, sind aber so miteinander verbunden, dass es zum Verständnis beiträgt, sie in einem Kapitel zu besprechen. Aus diesem Grund werden sie in diesem Kapitel aufgeteilt nach der jeweiligen Schicht behandelt. Es ist weiterhin darauf zu achten, dass der ganze Rahmen einer jeweiligen Schicht als \ac{pdu} bezeichnet wird und die jeweilige Payload als \ac{sdu}.
@@ -184,5 +185,62 @@ Ein Paket besteht zunächst aus dem Frame des Physical Layers. Dieser enthält e
 \end{figure}
 Da die MAC Schicht direkt über dem PHY Layer liegt, stellt die \acf{mpdu} gleichzeitig die Payload des Phy Frames und somit die \acf{psdu} dar. Abbildung \ref{mpdu} zeigt dieses Prinzip. \\
 Die MPDU als solches besteht aus einem MAC Header, der \acf{msdu} und einem MAC Footer. Die MSDU ist die Payload des MAC Layers und kann Frames höherer Schichten enthalten.
+In 15.4 gibt es auf der Ebene des MAC Layers vier verschiedene Rahmentypen (engl. Frame Types), die sich in ihrem detaillierten Aufbau der MPDU unterscheiden.
+\begin{itemize}
+	\item Data Frame: Enthält Payload höherer Schichten
+	\item Beacon Frame: Beacon zu Beginn eines Superframes im Beacon Mode
+	\item Acknowledge Frame: Dient zur Bestätigung des Eingangs von Paketen
+	\item Command Frame: versch. Befehle wie GTS Request, PAN ID Conflict Notification o.ä.
+\end{itemize}
+Der MAC Footer ist bei allen Frame Types gleich und besteht lediglich aus einer \ac{fcs}, die wiederum aus dem Resultat eines 16-bit \ac{crc} Algorithmus besteht. Hier finden sich also die Prüfbits, die die sichere Übertragung aller Bits gewährleisten.\\
+Sämtliche Rahmentypen enthalten außerdem im Header zwei Bytes Frame Control - dazu später mehr - und eine Sequenznummer, die mit jedem Rahmen hochgezählt wird. Beim restlichen Header und der MSDU unterscheiden sie sich. \\
+
+\textbf{Frame Control} \\
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{Grafiken-Alex/framecontrol.jpg}
+	\caption{Die Frame Control in 15.4 aus \cite{rubinstein}}
+	\label{framecontrol}
+\end{figure}
+
+Die Frame Control kommt bei allen Rahmentypen vor und wird aus diesem Grund hier seperat behandelt. Sie besteht aus der Klassifizierung des Frame Types, einer Information, ob ein Sicherheitsmechanismus verwendet wird, einer Information über nicht bestätigte Frames, einem Acknowledge Request, sofern dieses gewünscht ist, der PAN ID, dem Modus für Ziel- und Sende-MAC-Adresse (können Short oder Long sein) und der genutzten Version. Insgesamt ergibt sich also die Frame Control wie in Abb. \ref{framecontrol} gezeigt. \\
+
+\textbf{Data Frame} \\
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{Grafiken-Alex/dataframe.jpg}
+	\caption{Der Datenrahmen in 15.4 aus \cite{bartusch}}
+	\label{dataframe}
+\end{figure}
+Der Datenrahmen enthält im Header Frame Control, Sequence Number, Adressing Fields - also die Sende- und Empfangsadressen - und gegebenenfalls einen Behilfsheader für Sicherheitsmechanismen (engl. Auxiliary Security Header). Damit bleiben je nach Konfiguration bis zu 102 Bytes für die MSDU - in diesem Fall die Payload höherer Schichten - übrig. \\
+
+\textbf{Beacon Frame} \\
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{Grafiken-Alex/beaconframe.jpg}
+	\caption{Der Beacon Rahmen in 15.4 aus \cite{bartusch}}
+	\label{beaconframe}
+\end{figure}
+Der Beacon Rahmen enthält zunächst im Header die Frame Control, Sequence Number, die Adresse des Senders und wieder einen optionalen Auxiliary Security Header. Die MSDU hingegen enthält die Spezifikationen des Superframes und der GTS, eine Liste sämtlicher Adressen, die beim PAN Coordinator verfügbar sind und eine Payload. Letztere kann von höheren Schichten verwendet werden, um Pakete als Broadcast an alle Teilnehmer zu versenden. \\
+
+\textbf{Acknowledge Frame} \\
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{Grafiken-Alex/acknowledgeframe.jpg}
+	\caption{Der Bestätigungsrahmen in 15.4 aus \cite{bartusch}}
+	\label{acknowledgeframe}
+\end{figure}
+Der Bestätigungsrahmen enthält nur die Frame Control und die Sequenznummer im Header. Auf eine MSDU wird zur Vermeidung von übermäßig viel Traffic gänzlich verzichtet. Wartet ein Sender auf eine Bestätigung einer versendeten Nachricht, so vergleicht er einfach die Sequenznummer des Acknowledge Frames mit der der gesendeten Nachricht. \\
+
+\textbf{Command Frame} \\
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{Grafiken-Alex/commandframe.jpg}
+	\caption{Der Befehlsrahmen in 15.4 aus \cite{bartusch}}
+	\label{commandframe}
+\end{figure}
+Der Befehlsrahmen enthält wieder den bekannten Header bestehend aus Frame Control, Sequence Number, Adressing Fields und des optionalen Auxiliary Security Headers. Die MSDU besteht hier einfach aus dem Command Type (1 Byte) und einer Payload, die zusätzliche Informationen zum Befehl bereitstellen kann.
+
+
 
 
