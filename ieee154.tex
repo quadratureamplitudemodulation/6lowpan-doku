@@ -161,7 +161,28 @@ Dieser setzt auf sogenannte Superframes. Ein Superframe ist ein Zeitrahmen, der 
 	\caption{Inhalte eines Superframes bei Nutzung von 15.4 im Beacon Mode}
 	\label{superframe}
 \end{figure}
-Die aktive Phase lässt sich weiter in \ac{cap} und \ac{cfp} unterteilen. \cite{superframestructure}. In ersterer ist der Kanal für alle Teilnehmer verfügbar und darf unter Verwendung des CSMA/CA-Algorithmus genutzt werden. Ein Teilnehmer - im Übrigen auch Node genannt - kann den Channel durch zweimaliges Aussenden des \ac{caa} Symbols reservieren und darf daraufhin seine Daten senden. \cite{sarodeslottedscmaca} Die CFP Periode wird in \ac{gts} unterteilt. Einem Teilnehmer kann also ein Slot zugewiesen werden, während dem er den garantierten alleinigen Zugriff auf den Kanal hat. Dabei ist anzunehmen, dass Nodes geringer Priorität ihre Daten während der CAP versenden und Nodes hoher Priorität eine GTS in der CFP zugewiesen bekommen. Nach Abschluss der CFP beginnt die Sleep Period. Die Länge der jeweiligen Perioden und ihre Existenz - CFP und Sleep Period sind optional - teilt der PAN Coordinator mit dem Inhalt des Beacons mit. Die ganze Struktur eines Superframes ist in Abbildung \ref{superframe} dargestellt. Es ist im Übrigen darauf zu achten, dass die CFP maximal sieben GTS bereitstellen darf.
+Die aktive Phase lässt sich weiter in \ac{cap} und \ac{cfp} unterteilen. \cite{superframestructure}. In ersterer ist der Kanal für alle Teilnehmer verfügbar und darf unter Verwendung des CSMA/CA-Algorithmus genutzt werden. Ein Teilnehmer - im Übrigen auch Node genannt - kann den Channel durch zweimaliges Durchführen der \ac{caa} Methode - hierbei lauscht er auf dem Kanal, ob Kommunikation stattfindet - erforschen und darf daraufhin - vorausgesetzt es findet aktuell keine Kommunikation statt - seine Daten senden. \cite{sarodeslottedscmaca} Es ist darauf zu achten, dass es sich hierbei um ein Slotted CSMA/CA handelt und deshalb CAA zu Beginn eines Slots durchgeführt werden muss. \\
+Die CFP Periode wird in \ac{gts} unterteilt. Einem Teilnehmer kann also ein Slot zugewiesen werden, während dem er den garantierten alleinigen Zugriff auf den Kanal hat. Dabei ist anzunehmen, dass Nodes geringer Priorität ihre Daten während der CAP versenden und Nodes hoher Priorität eine GTS in der CFP zugewiesen bekommen. Nach Abschluss der CFP beginnt die Sleep Period. Die Länge der jeweiligen Perioden und ihre Existenz - CFP und Sleep Period sind optional - teilt der PAN Coordinator mit dem Inhalt des Beacons mit. Die ganze Struktur eines Superframes ist in Abbildung \ref{superframe} dargestellt. Es ist im Übrigen darauf zu achten, dass die CFP maximal sieben GTS bereitstellen darf. Das resultiert darauf, dass ein Superframe eine maximale Länge von 16 Slots hat, wobei 9 Slots für CAP bereitgestellt werden müssen.
 
+\subsection{Datenrahmen}
+Die Datenrahmen können eigentlich den einzelnen Schichten zugeordnet werden, sind aber so miteinander verbunden, dass es zum Verständnis beiträgt, sie in einem Kapitel zu besprechen. Aus diesem Grund werden sie in diesem Kapitel aufgeteilt nach der jeweiligen Schicht behandelt. Es ist weiterhin darauf zu achten, dass der ganze Rahmen einer jeweiligen Schicht als \ac{pdu} bezeichnet wird und die jeweilige Payload als \ac{sdu}.
+
+\subsubsection{\ac{ppdu}}
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{Grafiken-Alex/ppdu.jpg}
+	\caption{Der Frame des Physical Layers in 15.4 aus \cite{rubinstein}}
+	\label{ppdu}
+\end{figure}
+Ein Paket besteht zunächst aus dem Frame des Physical Layers. Dieser enthält eine 8 Byte lange Präambel, die zur Synchronisation dient, einen 1 Byte langen Start of Frame und den 1 Byte langen PHY Header, der die Länge des \ac{psdu} beschreibt. Daraufhin folgen die Nutzdaten, die eine Länge von bis zu 127 Byte haben können. Die ganze PPDU ist in Grafik \ref{ppdu} zu sehen. 
+\subsubsection{\ac{mpdu}}
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{Grafiken-Alex/mpdu.jpg}
+	\caption{Der Frame des MAC Layers (oben) und seine Einordnung in den Frame des PHY Layers (unten) in 15.4 aus \cite{rubinstein}}
+	\label{mpdu}
+\end{figure}
+Da die MAC Schicht direkt über dem PHY Layer liegt, stellt die \acf{mpdu} gleichzeitig die Payload des Phy Frames und somit die \acf{psdu} dar. Abbildung \ref{mpdu} zeigt dieses Prinzip. \\
+Die MPDU als solches besteht aus einem MAC Header, der \acf{msdu} und einem MAC Footer. Die MSDU ist die Payload des MAC Layers und kann Frames höherer Schichten enthalten.
 
 
