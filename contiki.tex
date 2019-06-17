@@ -150,6 +150,7 @@
 	\end{figure}
 	\subsubsection{CC1310 Launchpad und dessen Konfigurationsdateien in Contiki \ac{os}}
 	Contiki \ac{os} besitzt für eine Plattform bereits vordefiniert, welche Schnittstellen das Board oder der Prozessor besitzt. Diese Definitionen werden beim Kompilieren eines Projektes verwendet. Die Prozessor spezifischen Einstellungen befinden sich dabei im Conitki-conf.h File. In Contiki-conf.h wird beispielsweise definiert mit welcher Baudrate eine UART-Schnittstelle arbeitet oder bezogen auf \ac{6lowpan}, welche Kompressionsmethode und ab welcher Payload eine Fragmentierung der Pakete vorgenommen werden soll (vgl. Abbildung \ref{Contiki-conf}).\\
+	Zusätzlich zum Contiki-conf.h File kann ein zusätzliches projektspezifisches Konfigurationsfile (project-conf.h) angelegt werden. Im project-conf.h File können vorab Einstellungen vorgenommen werden, die  beispielsweise den Stackaufbau betreffen.
 	\begin{figure}
 		\centering
 		\includegraphics[scale=0.5]{Grafiken-Julian/Contiki_conf.png}
