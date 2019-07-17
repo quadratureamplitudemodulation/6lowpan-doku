@@ -39,13 +39,7 @@
 		\label{ContikiMAC}
 	\end{figure}
 	Nach dem \ac{csmaca} Stack folgt der \ac{6lowpan} Stack, der als Adaptionslayer zwischen \ac{ipv6} und dem \ac{mac}-Layer dient. Mithilfe des \ac{6lowpan} Protokoll wird der Header der überliegenden Layern erheblich verkleinert. Durch das \ac{6lowpan} Protokoll kann der Header eines \ac{ipv6} Pakets so verkleinert werden, dass die maximal zulässige Größe eines \ac{15.4} Pakets eingehalten werden kann. Deshalb ermöglicht dieses Protokoll erst die Nutzung des \ac{15.4} Protokolls und damit eine energiesparende Funkübertragung.\\
-	Im Network Layer bietet Contiki die Nutzung von \ac{ipv6} und \ac{rpl}. \ac{rpl} baut das Kommunikationsnetz mit zielgerichteten Graphen auf. Dabei unterscheidet man zwischen \ac{dag} und \ac{dodag}. Ein \ac{dag}-Graph hat dabei mehrere Zielknoten jedoch nur eine Linie (ohne Schleifen) zum Zielknoten. Ein \ac{dodag}-Graph hingegen hat nur einen Zielknoten aber dafür gibt es mehrere Wege zum Zielknoten(vgl. Abbildung \ref{RPL_DAG_DODAG}).\\
-	\begin{figure}
-		\centering
-		\includegraphics[scale=0.5]{Grafiken-Julian/RPL_DAG_DODAG.png}
-		\caption{verschiedene Graphentypen beim RPL, \cite{rpldagdodag}}
-		\label{RPL_DAG_DODAG}
-	\end{figure}
+	Im Network Layer bietet Contiki die Nutzung von \ac{ipv6} und \ac{rpl}.\\
 	Auf der Transportschicht kann man sich für \ac{tcp} oder \ac{udp} entscheiden. \ac{tcp} macht jedoch in Kombination mit \ac{6lowpan} und \ac{15.4} wenig Sinn, da \ac{tcp} einen noch größeren Header besitzt als \ac{udp}. Da \ac{tcp} nicht komprimiert wird, ist dies allein aufgrund der Headergröße nicht möglich. \ac{tcp} ist ein verbindungsorientiertes Protokoll und bietet deshalb mehr Sicherheit, dass Pakete richtig (in der richtigen Reihenfolge, keine Bitfehler...) empfangen werden. Da mit \ac{6lowpan} ein Sensornetzwerk betrieben werden soll, wo die Sensoren beispielsweise nur jede Minute einen neuen Wert liefern, kann es auch vernachlässigt werden, wenn einzelne Nachrichten falsch oder gar nicht ankommen. Da \ac{udp} auf bestimmte Sachen aus dem \ac{tcp} Protokoll verzichtet, wird \ac{udp} allgemein als die unkompliziertere und schnellere Verbindung angesehen.\\
 	Auf der Applikationsschicht kann zwischen \ac{coap} und \ac{http} entschieden werden. Wie bei \ac{tcp} und \ac{udp}, ist \ac{coap} im Vergleich zu \ac{http} das schlankere Protokoll und bietet sich deshalb auch für ein \ac{6lowpan} Netzwerk an.\\
 	
