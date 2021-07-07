@@ -6,6 +6,7 @@
 !*.bib
 !*.pdf
 !*.jpg
+!*.png
 !.gitignore
 !README.md
 
